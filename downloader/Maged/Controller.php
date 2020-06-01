@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Connect
- * @copyright  Copyright (c) 2006-2018 Magento, Inc. (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2020 Magento, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -813,15 +813,20 @@ final class Maged_Controller
      */
     public function dispatch()
     {
-        $baseUrl = Mage::getBaseUrl(
-            Mage_Core_Model_Store::URL_TYPE_LINK, Mage::getSingleton('adminhtml/url')->getSecure()
-        );
-        if (strpos($baseUrl, 'https') === 0) {
-            $request = Mage::app()->getRequest();
-            if (!$request->isSecure()) {
-                Mage::app()->getFrontController()->getResponse()
-                    ->setRedirect(rtrim($baseUrl, '/') . $request->getRequestUri(), 301)->sendResponse();
-                exit;
+        if (class_exists('Mage')) {
+            if (Mage::getConfig() == null) {
+                Mage::init();
+            }
+            $baseUrl = Mage::getBaseUrl(
+                Mage_Core_Model_Store::URL_TYPE_LINK, Mage::getSingleton('adminhtml/url')->getSecure()
+            );
+            if (strpos($baseUrl, 'https') === 0) {
+                $request = Mage::app()->getRequest();
+                if (!$request->isSecure()) {
+                    Mage::app()->getFrontController()->getResponse()
+                        ->setRedirect(rtrim($baseUrl, '/') . $request->getRequestUri(), 301)->sendResponse();
+                    exit;
+                }
             }
         }
 
@@ -1071,8 +1076,8 @@ final class Maged_Controller
         return array(
             'major'     => '1',
             'minor'     => '9',
-            'revision'  => '3',
-            'patch'     => '10',
+            'revision'  => '4',
+            'patch'     => '5',
             'stability' => '',
             'number'    => '',
         );
